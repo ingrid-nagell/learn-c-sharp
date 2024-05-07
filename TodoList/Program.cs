@@ -71,16 +71,16 @@ List<string> AddToDos(List<string> toDoList)
         {
             Console.WriteLine("\nThe TODO string cannot be empty.");
         }
-        else if(toDoList.contains(newToDo))
+        else if(toDoList.Contains(newToDo))
         {
             Console.WriteLine("\nThe TODO string already exists.");
         }
         else
         {
-            Console.WriteLine($"\nYou typed <{newToDo}>\nPress [Y] to commit this TODO.");
+            Console.WriteLine($"\nYou typed <{newToDo}>\nPress [ENTER] or [Y] to commit this TODO.");
             var commitAnswer = Console.ReadLine().ToLower();
             newToDoIsValid = true;
-            if(commitAnswer == "y" || commitAnswer == "yes")
+            if(commitAnswer == "y" || commitAnswer == "yes" || commitAnswer == "")
             {
                 Console.WriteLine($"\n<{newToDo}> has successfully been added to the list.");
                 newList.Add(newToDo);
@@ -106,21 +106,27 @@ void RemoveToDosMsg(List<string> toDoList)
         Console.WriteLine($"Type the number of the index number in the console to remove it.\nThe TODO list contains the following items:\n");
         SeeToDos(toDoList);
         var userInput = Console.ReadLine();
-        int removeToDo = int.Parse(userInput)-1; // Evaluate if parseable
-
-        if(removeToDo < toDoList.Count)
+        if
+        (
+            int.TryParse(userInput, out int index)
+            && index >= 1
+            && index<= toDoList.Count
+        )
         {
-            Console.WriteLine($"Do you want to remove TODO number {userInput}? [Y] to confirm");
+            int removeToDo = index-1; // Evaluate if parseable
+
+            Console.WriteLine($"Do you want to remove TODO number {userInput}? Press [ENTER] or [Y] to confirm");
 
             var removeCommit = Console.ReadLine();
-            if(removeCommit == "y" || removeCommit == "yes")
+            if(removeCommit == "y" || removeCommit == "yes" || removeCommit == "")
             {
                 var newList = RemoveToDo(toDoList, removeToDo);
             }
         }
+
         else
         {
-            Console.WriteLine($"{userInput} is not a number in the To Do List");
+            Console.WriteLine($"{userInput} is not a number on the TODO List");
         }
     }
 }
@@ -128,34 +134,36 @@ void RemoveToDosMsg(List<string> toDoList)
 
 List<string> RemoveToDo(List<string> toDoList, int choice)
 {
+    Console.WriteLine($"\n--- Deleting item: {toDoList[choice]} ---");
     toDoList.RemoveAt(choice);
-    Console.WriteLine($"\n--- Deleted item no. {choice + 1} ---");
     return toDoList;
 }
 
 
 void SeeToDos(List<string> toDoList)
 {
-    var itemNumber = 0;
-    foreach(var item in toDoList)
-    {
-        Console.WriteLine($"{itemNumber+1}. {item}");
-        itemNumber++;
-    }
-    if(itemNumber==0)
+    if(toDoList.Count ==0)
     {
         Console.WriteLine("TODO list is empty.");
     }
+    else
+    {
+        for (int i = 0; i < toDoList.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. {toDoList[i]}");
+        }
+    }
+
 }
 
 
 bool ConfirmExit()
 {
     string exitAnswer;
-    Console.WriteLine("Are you sure you want to exit the program? Press [Y] to confirm.");
+    Console.WriteLine("Are you sure you want to exit the program? Press [ENTER] or [Y] to confirm.");
 
     exitAnswer = Console.ReadLine().ToLower();
-    if(exitAnswer == "y" || exitAnswer == "yes")
+    if(exitAnswer == "y" || exitAnswer == "yes" || exitAnswer == "")
     {
         return true;
     }
